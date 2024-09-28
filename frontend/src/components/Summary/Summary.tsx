@@ -1,28 +1,20 @@
 import './summary.scss';
-import data from '../../mocks/summary-api.json';
-import { useEffect, useState } from 'react';
 import { Settings, SummaryType } from '../../types';
 import { categoryMap, typeMap } from '../../constans';
 import { FaRegEdit } from "react-icons/fa";
 
-const Summary = ({ settings }: SummaryProps) => {
-    const [summaryData, useSummaryData] = useState<SummaryType[]>([]);
-
-    useEffect(() => {
-        useSummaryData(data);
-    }, [data]);
-
-    const categories = new Set(summaryData.map((summary: SummaryType) => summary.category));
+const Summary = ({ settings, responses }: SummaryProps) => {
+    const categories = new Set(responses.map((summary: SummaryType) => summary.category));
 
     const summaryElements = [...categories].map((category: string) => {
         
-        const categoryData = summaryData
+        const categoryData = responses
             .filter((summary: SummaryType) => summary.category === category)
             .map((summary: SummaryType) => (
                 <div className='category-response-wrapper'>
                     <div className='category-response-block'>
                         <div className='category-type'>{typeMap[summary.type as keyof typeof typeMap][settings.language]}</div>
-                        <div className='category-response'>{summary.response}</div>
+                        <div className='category-response'>{summary.value}</div>
                     </div>
                     <div className='edit-response-button'>
                         <FaRegEdit 
@@ -72,6 +64,7 @@ const messages = {
 
 type SummaryProps = {
     settings: Settings,
+    responses: SummaryType[],
 };
 
 export default Summary;
