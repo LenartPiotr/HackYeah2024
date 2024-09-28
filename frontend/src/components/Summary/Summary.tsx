@@ -21,7 +21,7 @@ const Summary = ({ settings }: SummaryProps) => {
             .map((summary: SummaryType) => (
                 <div className='category-response-wrapper'>
                     <div className='category-response-block'>
-                        <div className='category-type'>{typeMap[summary.type as keyof typeof typeMap]}</div>
+                        <div className='category-type'>{typeMap[summary.type as keyof typeof typeMap][settings.language]}</div>
                         <div className='category-response'>{summary.response}</div>
                     </div>
                     <div className='edit-response-button'>
@@ -35,7 +35,7 @@ const Summary = ({ settings }: SummaryProps) => {
 
         return (
             <div className='summary-category'>
-                <h3 className='category-header'>{categoryMap[category as keyof typeof categoryMap]}</h3>
+                <h3 className='category-header'>{categoryMap[category as keyof typeof categoryMap][settings.language]}</h3>
                 <div className='category-data'>
                     {...categoryData}
                 </div>
