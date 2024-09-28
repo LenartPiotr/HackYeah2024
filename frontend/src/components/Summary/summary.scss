@@ -1,0 +1,68 @@
+@use '../../library' as l;
+
+.main-summary {
+    padding: 2rem;
+    overflow-y: scroll;
+
+    .summary-title {
+        font-size: 1.7rem;
+    }
+    
+    .summary-category {
+        .category-header {
+            font-size: 1.5rem;
+        }
+
+        .category-data {
+            
+            .category-response-wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                .category-response-block {
+                    display: flex;
+                    flex-direction: column;
+                    padding-block: 5px;
+    
+                    .category-type {
+                        font-size: 1.2rem;
+                    }
+    
+                    .category-response {
+                        padding-block: 7px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        color: l.$primary-color;
+                    }
+                }
+
+                .edit-response-button {
+                    display: flex;
+                    align-items: center;
+                    background-color: l.$primary-color;
+                    color: #fff;
+                    padding: 6px 12px;
+                    border-radius: 5px;
+                    font-size: 1.2rem;
+                    cursor: pointer;
+
+                    & svg {
+                        padding: 0 5px;
+                    }
+                }
+            }
+        }
+    }
+
+    .summary-accept {
+        background-color: l.$primary-color;
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 5px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        border: none;
+        margin-block: 2.5rem;
+    }
+}

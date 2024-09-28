@@ -1,6 +1,8 @@
+import './headerBar.scss';
+
 const HeaderBar = () => {
     return (
-        <div>Header bar</div>
+        <div className="header-bar"></div>
     )
 };
 

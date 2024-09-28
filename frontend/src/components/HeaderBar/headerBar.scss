@@ -1,0 +1,6 @@
+@use '../../library' as l;
+
+.header-bar {
+    height: 50px;
+    background-color: l.$primary-color;
+}

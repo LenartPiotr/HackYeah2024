@@ -1,10 +1,20 @@
+@use 'library' as l;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
 body {
     margin: 0;
     padding: 0;
+    font-family: 'Inter';
 }
 
 #root {
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     height: 100vh;
+}
+
+* {
+    scrollbar-width: thin;
 }
 
