@@ -1,3 +1,5 @@
+import { Languages } from "./enums";
+
 type SummaryType = {
     category: string,
     type: string,
@@ -9,7 +11,12 @@ type MessageType = {
     fromUser?: boolean;
 }
 
+type Settings = {
+    language: Languages
+};
+
 export type {
     SummaryType,
-    MessageType
+    MessageType,
+    Settings
 };

@@ -1,11 +1,11 @@
 import './summary.scss';
 import data from '../../mocks/summary-api.json';
 import { useEffect, useState } from 'react';
-import { SummaryType } from '../../types';
+import { Settings, SummaryType } from '../../types';
 import { categoryMap, typeMap } from '../../constans';
 import { FaRegEdit } from "react-icons/fa";
 
-const Summary = () => {
+const Summary = ({ settings }: SummaryProps) => {
     const [summaryData, useSummaryData] = useState<SummaryType[]>([]);
 
     useEffect(() => {
@@ -28,7 +28,7 @@ const Summary = () => {
                         <FaRegEdit 
                             size="20px"
                         />
-                        Edytuj
+                        {messages['edit'][settings.language]}
                     </div>
                 </div>
             ))
@@ -45,11 +45,33 @@ const Summary = () => {
 
     return (
         <div className='main-summary'>
-            <h2 className='summary-title'>Podsumowanie</h2>
+            <h2 className='summary-title'>{messages['summary-title'][settings.language]}</h2>
             {...summaryElements}
-            <button className='summary-accept'>Akceptuj i zapisz</button>
+            <button className='summary-accept'>{messages['accept-button'][settings.language]}</button>
         </div>
     )
+};
+
+const messages = {
+    'summary-title': {
+        'polish': 'Podsumowanie',
+        'english': 'Summary',
+        'ukrainian': 'Резюме'
+    },
+    'edit': {
+        'polish': 'Edytuj',
+        'english': 'Edit',
+        'ukrainian': 'Редагувати',
+    },
+    'accept-button': {
+        'polish': 'Akceptuj i zapisz',
+        'english': 'Confirm and save',
+        'ukrainian': 'Підтвердити та зберегти'
+    }
+}
+
+type SummaryProps = {
+    settings: Settings,
 };
 
 export default Summary;
