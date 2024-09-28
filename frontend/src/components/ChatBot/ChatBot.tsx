@@ -1,19 +1,16 @@
 import "./ChatBox.scss";
 import { useEffect, useRef, useState } from "react";
 import { MessageType } from '../../types';
-import data from '../../mocks/chatbot-api.json';
 import loadingGif from "../../assets/loading.gif";
 
 const ChatBot = () => {
-  const [chatData, setChatData] = useState<MessageType[]>([]);
+  const [chatData, setChatData] = useState<MessageType[]>([{
+    text: "Witaj, opisz mi swoją sytuację, abym mógł ci pomóc"
+  }]);
   const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const messageBox = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    setChatData(data);
-  }, [data]);
 
   useEffect(() => {
     if(messageBox.current) {
