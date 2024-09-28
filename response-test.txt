@@ -1,0 +1,33 @@
+// CLIENT SEND
+{
+    "response": "Lorem ipsum"
+}
+
+// CHAT RESPONSE
+
+{
+    "responses": [
+        {
+            "type": "nameSurname",
+            "response": "Jan Kowalski"
+        },
+        {
+            "type": "dateOfBirth",
+            "response": "22.01.1999"
+        }
+    ],
+    "nextQuestion": "Lorem ipsum"
+}
+
+{
+    "nameSurname": "Imię i nazwisko"
+}
+
+const responses = [
+    {
+        "type": "nameSurname",
+        "response": "Jan Kowalski"
+    },
+]
+
+responses.map((answer) => <div>${responses[answer.type]}</div>)
