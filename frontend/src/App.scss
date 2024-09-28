@@ -1,8 +1,9 @@
 .main-layout {
     display: flex;
     height: 100%;
+    overflow: hidden;
     
-    & > div { 
+    & > * { 
         flex-basis:  50%;
     }
 }
