@@ -8,6 +8,26 @@ import { Languages } from '../../enums';
 import { CiImport, CiExport } from "react-icons/ci";
 
 const Header = ({ settings, changeLanguage }: HeaderProps) => {
+
+    const handleXml = () => {
+        const d = new Date();
+        let [date, time] = d.toLocaleString().split(", ");
+        date = date.split(".").reverse().join("_");
+        time = time.split(":").join("_");
+          
+        fetch("http://127.0.0.1:8000/xml")
+            .then(res => res.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `formularz_${date}_${time}.xml`;
+                document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                a.click();    
+                a.remove();  //afterwards we remove the element again  
+            });
+    };
+
     return (
         <header className='header-main'>
             <div className='form-info'>
@@ -45,7 +65,7 @@ const Header = ({ settings, changeLanguage }: HeaderProps) => {
                     </div>
                 </div>
                 <div className='export-functions'>
-                    <div className='function'>{messages['generate-xml'][settings.language]}<CiExport size="25px" /></div>
+                    <div className='function' onClick={handleXml}>{messages['generate-xml'][settings.language]}<CiExport size="25px" /></div>
                 </div>
             </div>
         </header>
