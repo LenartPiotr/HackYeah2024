@@ -45,9 +45,7 @@ const Header = ({ settings, changeLanguage }: HeaderProps) => {
                     </div>
                 </div>
                 <div className='export-functions'>
-                    <div className='function'>Importuj plik XML <CiImport size="25px" /></div>
-                    <div className='divider'></div>
-                    <div className='function'>Eksportuj plik XML <CiExport size="25px" /></div>
+                    <div className='function'>{messages['generate-xml'][settings.language]}<CiExport size="25px" /></div>
                 </div>
             </div>
         </header>
@@ -65,6 +63,11 @@ const messages = {
         'english': 'Language panel',
         'ukrainian': 'Мова панелі'
     },
+    'generate-xml': {
+        'polish': 'Wygeneruj plik XML',
+        'english': 'Generate XML file',
+        'ukrainian': 'Згенеруйте XML-файл'
+    }
 };
 
 type HeaderProps = {
