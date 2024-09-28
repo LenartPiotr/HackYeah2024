@@ -1,0 +1,37 @@
+[
+    {
+        "category": "B",
+        "type": "name",
+        "response": "Jan"
+    },
+    {
+        "category": "B",
+        "type": "surname",
+        "response": "Kowalski"
+    },
+    {
+        "category": "B",
+        "type": "birthDate",
+        "response": "21.08.1999"
+    },
+    {
+        "category": "B",
+        "type": "country",
+        "response": "Polska"
+    },
+    {
+        "category": "C",
+        "type": "subjectOfTax",
+        "response": "umowa"
+    },
+    {
+        "category": "D",
+        "type": "typeOfCivilLawActivity",
+        "response": "umowa sprzedaży"
+    },
+    {
+        "category": "E",
+        "type": "typeOfCompany",
+        "response": "spółka osobowa"
+    }
+]
