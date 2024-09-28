@@ -5,24 +5,31 @@ import datetime
 class Parser_PCC3:
     def __init__(self):
         self.fields = {
-            "first_name": "",
-            "last_name": "",
-            "pesel": "",
-            "birth_date": "",
-            "father_name": "",
-            "mother_name": "",
-            "province": "",
-            "district": "",
-            "municipality": "",
-            "street": "",
-            "neighborhood": "",
-            "house_number": "",
-            "apartment_number": "",
-            "city": "",
-            "postal_code": "",
-            "transaction_date": "",
-            "final_value": "",
-            "item_description": "",
+            'A': {
+                "transaction_date": "",
+                "office_code": "",
+            },
+            'B': {
+                "first_name": "",
+                "last_name": "",
+                "pesel": "",
+                "birth_date": "",
+                "father_name": "",
+                "mother_name": "",
+                "province": "",
+                "district": "",
+                "municipality": "",
+                "street": "",
+                "neighborhood": "",
+                "house_number": "",
+                "apartment_number": "",
+                "city": "",
+                "postal_code": "",
+            },
+            'D': {
+                "final_value": "",
+                "item_description": "",
+            },
         }
 
     def parse_word(self, value: str):
@@ -30,19 +37,20 @@ class Parser_PCC3:
         return match.group(0) if match else None
 
     def parse_pesel(self, value: str):
-        match = re.search(r"\\d{11}", value)
+        match = re.search(r"\d{11}", value)
         return match.group(0) if match else None
 
     def parse_date(self, value: str):
         match = re.search(
-            r"(?P<forward>\\d{2}-\\d{2}-\\d{4}})|(?P<reverse>\\d{4}-\\d{2}-\\d{2})|(?P<word>[a-ząćęłńóśżźA-ZĄĆĘŁŃÓŚŻŹ]+|(?:the *)?day *before *yester *day)",
+            r"(?P<forward>\d{2}-\d{2}-\d{4}})|(?P<reverse>\d{4}-\d{2}-\d{2})|(?P<word>[a-ząćęłńóśżźA-ZĄĆĘŁŃÓŚŻŹ]+|(?:the *)?day *before *yester *day)",
             value,
         )
+        print(match.group("forward"))
         if not match:
             return None
         try:
-            date = match.group("forward")
-            return f"{date[0:2]}-{date[3:5]}-{date[6:]}"
+            date = match.group("reverse")
+            return f"{date[6:]}-{date[3:5]}-{date[0:2]}"
         except IndexError:
             pass
         try:
@@ -67,15 +75,15 @@ class Parser_PCC3:
         return None
 
     def parse_postal(self, value: str):
-        match = re.search(r'\\d{2}-\\d{3}', value)
+        match = re.search(r'\d{2}-\d{3}', value)
         return match.group(0) if match else None
 
     def parse_number(self, value: str):
-        match = re.search(r'\\d+', value)
+        match = re.search(r'\d+', value)
         return match.group(0) if match else None
 
     def parse_money(self, value: str):
-        match = re.search(r'.*?(\\d+)', value)
+        match = re.search(r'.*?(\d+)', value)
         return match.group(1) if match else None
 
     def parse_sentence(self, value: str):
@@ -88,75 +96,89 @@ class Parser_PCC3:
         patterns = {
             r"Pierwsze imię: ([^\n]+)": {
                 "field": "first_name",
+                'category': 'B',
                 "parse": self.parse_word,
                 "validate": self.validate
             },
-            r"Nazwisko: ([^\n]+)": {"field": "last_name", "parse": self.parse_word, 'validate': self.validate},
-            r"Pesel: ([^\n]+)": {"field": "pesel", "parse": self.parse_pesel, 'validate': self.validate},
+            r"Nazwisko: ([^\n]+)": {"field": "last_name", 'category': 'B', "parse": self.parse_word, 'validate': self.validate},
+            r"Pesel: ([^\n]+)": {"field": "pesel", 'category': 'B', "parse": self.parse_pesel, 'validate': self.validate},
             r"data urodzenia: ([^\n]+)": {
                 "field": "birth_date",
+                'category': 'B',
                 "parse": self.parse_date,
                 'validate': self.validate
             },
-            r"Imię ojca: ([^\n]+)": {"field": "father_name", "parse": self.parse_word, 'validate': self.validate},
-            r"Imię matki: ([^\n]+)": {"field": "mother_name", "parse": self.parse_word, 'validate': self.validate},
+            r"Imię ojca: ([^\n]+)": {"field": "father_name", 'category': 'B', "parse": self.parse_word, 'validate': self.validate},
+            r"Imię matki: ([^\n]+)": {"field": "mother_name", 'category': 'B', "parse": self.parse_word, 'validate': self.validate},
             r"województwo zamieszkania: ([^\n]+)": {
                 "field": "province",
+                'category': 'B',
                 "parse": self.parse_word,
                 'validate': self.validate
             },
             r"powiat zamieszkania: ([^\n]+)": {
                 "field": "district",
+                'category': 'B',
                 "parse": self.parse_word,
                 'validate': self.validate
             },
             r"gmina zamieszkania: ([^\n]+)": {
                 "field": "municipality",
+                'category': 'B',
                 "parse": self.parse_word,
                 'validate': self.validate
             },
             r"ulica zamieszkania: ([^\n]+)": {
                 "field": "street",
+                'category': 'B',
                 "parse": self.parse_word,
                 'validate': self.validate
             },
             r"osiedle zamieszkania: ([^\n]+)": {
                 "field": "neighborhood",
+                'category': 'B',
                 "parse": self.parse_word,
                 'validate': self.validate
             },
             r"nr domu zamieszkania: ([^\n]+)": {
                 "field": "house_number",
+                'category': 'B',
                 "parse": self.parse_number,
                 'validate': self.validate
             },
             r"nr lokalu zamieszkania: ([^\n]+)": {
                 "field": "apartment_number",
+                'category': 'B',
                 "parse": self.parse_number,
                 'validate': self.validate
             },
             r"miejscowość zamieszkania: ([^\n]+)": {
                 "field": "city",
+                'category': 'B',
                 "parse": self.parse_word,
                 'validate': self.validate
             },
             r"kod pocztowy zamieszkania: ([^\n]+)": {
                 "field": "postal_code",
+                'category': 'B',
                 "parse": self.parse_postal,
                 'validate': self.validate
             },
             r"Data dokonania czynności: ([^\n]+)": {
                 "field": "transaction_date",
+                'category': 'A',
                 "parse": self.parse_date,
                 'validate': self.validate
             },
             r"Ostateczna wartość pieniężna: ([^\n]+)": {
                 "field": "final_value",
+                'category': 'D',
                 "parse": self.parse_money,
                 'validate': self.validate
             },
             r"Opis przedmiotu: ([^\n]+)": {
                 "field": "item_description",
+                'category': 'D',
                 "parse": self.parse_sentence,
                 'validate': self.validate
             },
@@ -166,13 +188,14 @@ class Parser_PCC3:
             match = re.search(pattern, message)
             try:
                 if match and (value := match.group(1)) is not None:
-                    field, parse, validate = (
+                    field, parse, validate, category = (
                         entry["field"],
                         entry["parse"],
                         entry["validate"],
+                        entry['category'],
                     )
                     try:
-                        self.fields[field] = validate(parse(value))
+                        self.fields[category][field] = validate(parse(value))
                     except Exception:
                         pass
             except IndexError:
@@ -180,24 +203,24 @@ class Parser_PCC3:
 
     def __str__(self):
         return (
-            f"Pierwsze imię: {self.fields['first_name']}\n"
-            f"Nazwisko: {self.fields['last_name']}\n"
-            f"Pesel: {self.fields['pesel']}\n"
-            f"Data urodzenia: {self.fields['birth_date']}\n"
-            f"Imię ojca: {self.fields['father_name']}\n"
-            f"Imię matki: {self.fields['mother_name']}\n"
-            f"Województwo zamieszkania: {self.fields['province']}\n"
-            f"Powiat zamieszkania: {self.fields['district']}\n"
-            f"Gmina zamieszkania: {self.fields['municipality']}\n"
-            f"Ulica zamieszkania: {self.fields['street']}\n"
-            f"Osiedle zamieszkania: {self.fields['neighborhood']}\n"
-            f"Nr domu zamieszkania: {self.fields['house_number']}\n"
-            f"Nr lokalu zamieszkania: {self.fields['apartment_number']}\n"
-            f"Miejscowość zamieszkania: {self.fields['city']}\n"
-            f"Kod pocztowy zamieszkania: {self.fields['postal_code']}\n"
-            f"Data dokonania czynności: {self.fields['transaction_date']}\n"
-            f"Ostateczna wartość pieniężna: {self.fields['final_value']}\n"
-            f"Opis przedmiotu: {self.fields['item_description']}"
+            f"Pierwsze imię: {self.fields['B']['first_name']}\n"
+            f"Nazwisko: {self.fields['B']['last_name']}\n"
+            f"Pesel: {self.fields['B']['pesel']}\n"
+            f"Data urodzenia: {self.fields['B']['birth_date']}\n"
+            f"Imię ojca: {self.fields['B']['father_name']}\n"
+            f"Imię matki: {self.fields['B']['mother_name']}\n"
+            f"Województwo zamieszkania: {self.fields['B']['province']}\n"
+            f"Powiat zamieszkania: {self.fields['B']['district']}\n"
+            f"Gmina zamieszkania: {self.fields['B']['municipality']}\n"
+            f"Ulica zamieszkania: {self.fields['B']['street']}\n"
+            f"Osiedle zamieszkania: {self.fields['B']['neighborhood']}\n"
+            f"Nr domu zamieszkania: {self.fields['B']['house_number']}\n"
+            f"Nr lokalu zamieszkania: {self.fields['B']['apartment_number']}\n"
+            f"Miejscowość zamieszkania: {self.fields['B']['city']}\n"
+            f"Kod pocztowy zamieszkania: {self.fields['B']['postal_code']}\n"
+            f"Data dokonania czynności: {self.fields['A']['transaction_date']}\n"
+            f"Ostateczna wartość pieniężna: {self.fields['D']['final_value']}\n"
+            f"Opis przedmiotu: {self.fields['D']['item_description']}"
         )
     
     def no_none(self, value, default='0'):
@@ -216,7 +239,7 @@ class Parser_PCC3:
         cel_zlozenia = ET.SubElement(naglowek, 'CelZlozenia', poz="P_6")
         cel_zlozenia.text = "1"
         data = ET.SubElement(naglowek, 'Data', poz="P_4")
-        data.text = self.no_none(self.transaction_date)
+        data.text = self.no_none(self.fields['A']['transaction_date'])
         kod_urzedu = ET.SubElement(naglowek, 'KodUrzedu')
         kod_urzedu.text = "0271"
         
@@ -224,13 +247,13 @@ class Parser_PCC3:
         podmiot1 = ET.SubElement(deklaracja, 'Podmiot1', rola="Podatnik")
         osoba_fizyczna = ET.SubElement(podmiot1, 'OsobaFizyczna')
         pesel = ET.SubElement(osoba_fizyczna, 'PESEL')
-        pesel.text = self.no_none(self.pesel)
+        pesel.text = self.no_none(self.fields['B']['pesel'])
         imie_pierwsze = ET.SubElement(osoba_fizyczna, 'ImiePierwsze')
-        imie_pierwsze.text = self.no_none(self.first_name)
+        imie_pierwsze.text = self.no_none(self.fields['B']['first_name'])
         nazwisko = ET.SubElement(osoba_fizyczna, 'Nazwisko')
-        nazwisko.text = self.no_none(self.last_name)
+        nazwisko.text = self.no_none(self.fields['B']['last_name'])
         data_urodzenia = ET.SubElement(osoba_fizyczna, 'DataUrodzenia')
-        data_urodzenia.text = self.no_none(self.birth_date)
+        data_urodzenia.text = self.no_none(self.fields['B']['birth_date'])
         
         # Adres zamieszkania
         adres_zamieszkania = ET.SubElement(podmiot1, 'AdresZamieszkaniaSiedziby', rodzajAdresu="RAD")
@@ -238,21 +261,21 @@ class Parser_PCC3:
         kod_kraju = ET.SubElement(adres_pol, 'KodKraju')
         kod_kraju.text = "PL"
         wojewodztwo = ET.SubElement(adres_pol, 'Wojewodztwo')
-        wojewodztwo.text = self.no_none(self.province)
+        wojewodztwo.text = self.no_none(self.fields['B']['province'])
         powiat = ET.SubElement(adres_pol, 'Powiat')
-        powiat.text = self.no_none(self.district)
+        powiat.text = self.no_none(self.fields['B']['district'])
         gmina = ET.SubElement(adres_pol, 'Gmina')
-        gmina.text = self.no_none(self.municipality)
+        gmina.text = self.no_none(self.fields['B']['municipality'])
         ulica = ET.SubElement(adres_pol, 'Ulica')
-        ulica.text = self.no_none(self.street)
+        ulica.text = self.no_none(self.fields['B']['street'])
         nr_domu = ET.SubElement(adres_pol, 'NrDomu')
-        nr_domu.text = self.no_none(self.house_number)
+        nr_domu.text = self.no_none(self.fields['B']['house_number'])
         nr_lokalu = ET.SubElement(adres_pol, 'NrLokalu')
-        nr_lokalu.text = self.no_none(self.apartment_number)
+        nr_lokalu.text = self.no_none(self.fields['B']['apartment_number'])
         miejscowosc = ET.SubElement(adres_pol, 'Miejscowosc')
-        miejscowosc.text = self.no_none(self.city)
+        miejscowosc.text = self.no_none(self.fields['B']['city'])
         kod_pocztowy = ET.SubElement(adres_pol, 'KodPocztowy')
-        kod_pocztowy.text = self.no_none(self.postal_code)
+        kod_pocztowy.text = self.no_none(self.fields['B']['postal_code'])
 
         # Pozycje szczegółowe
         pozycje_szczegolowe = ET.SubElement(deklaracja, 'PozycjeSzczegolowe')
@@ -269,10 +292,10 @@ class Parser_PCC3:
         p22.text = "1"
         # Zwięzłe określenie treści i przedmiotu czynności cywilnoprawnej
         p23 = ET.SubElement(pozycje_szczegolowe, 'P_23')
-        p23.text = self.no_none(self.item_description)
+        p23.text = self.no_none(self.fields['D']['item_description'])
         
         # Podatki i wartości
-        value_24 = self.no_none(int(self.final_value), 0)
+        value_24 = int(self.no_none(self.fields['D']['final_value'], 0))
         tax_25 = round(value_24 * 0.01)
         value_26 = 0
         tax_27 = round(value_26 * 0.02)
@@ -327,4 +350,4 @@ if __name__ == '__main__':
     parser = Parser_PCC3()
     parser.parse_message(sample_message)
     print(parser)
-    parser.generate_xml('deklaracja.xml')
+    print(parser.generate_xml())
