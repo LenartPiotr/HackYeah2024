@@ -3,7 +3,7 @@ import { Languages } from "./enums";
 type SummaryType = {
     category: string,
     type: string,
-    response: string,
+    value: string,
 };
 
 type MessageType = {

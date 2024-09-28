@@ -1,16 +1,39 @@
 import "./ChatBox.scss";
 import { useEffect, useRef, useState } from "react";
-import { MessageType } from '../../types';
+import { MessageType, SummaryType } from '../../types';
 import loadingGif from "../../assets/loading.gif";
+import { useMutation } from "react-query";
+import axios from "axios";
 
-const ChatBot = () => {
+const ChatBot = ({ addResponses }: ChatBotProps) => {
+  const [message, setMessage] = useState<string>("");
   const [chatData, setChatData] = useState<MessageType[]>([{
     text: "Witaj, opisz mi swoją sytuację, abym mógł ci pomóc"
   }]);
-  const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const messageBox = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
+
+  const postMessage = async (data: { response: string }) => {
+    const response = await axios.post(`http://127.0.0.1:8000/message?response=${data.response}`);
+    return response.data;
+  };
+
+  const mutation = useMutation(postMessage, {
+    onMutate: () => {
+      setChatData(chatData => [...chatData, {text: message, fromUser: true}]);
+      setIsLoading(true);
+    },
+    onSuccess: (data) => {
+      setChatData(chatData => [...chatData, { text: data.next_question }]);
+      addResponses(data.responses);
+      setIsLoading(false);
+    },
+    onError: (error) => {
+      console.error("Error sending message:", error);
+      setIsLoading(false);
+    },
+  });
 
   useEffect(() => {
     if(messageBox.current) {
@@ -20,17 +43,12 @@ const ChatBot = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
     if(!message) {
       return;
     }
 
-    setChatData(chatData => [...chatData, {text: message, fromUser: true}]);
-    setIsLoading(isLoading => true);
-    new Promise((res) => setTimeout(res, 1000))
-      .then(() => {
-        setChatData(chatData => [...chatData, {text: "BOT odpowiada"}]);
-        setIsLoading(isLoading => false);
-      });
+    mutation.mutate({ response: message });
     
     setMessage("");
   }
@@ -61,6 +79,10 @@ const ChatBot = () => {
       </div>
     </form>
   )
+};
+
+type ChatBotProps = {
+  addResponses: (responseData: SummaryType[]) => void,
 };
 
 export default ChatBot;
