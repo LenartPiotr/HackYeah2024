@@ -6,11 +6,17 @@ type SummaryType = {
     response: string,
 };
 
+type MessageType = {
+    text: string,
+    fromUser?: boolean;
+}
+
 type Settings = {
     language: Languages
 };
 
 export type {
     SummaryType,
+    MessageType,
     Settings
 };
