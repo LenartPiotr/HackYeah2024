@@ -4,6 +4,12 @@ type SummaryType = {
     response: string,
 };
 
+type MessageType = {
+    text: string,
+    fromUser?: boolean;
+}
+
 export type {
-    SummaryType
+    SummaryType,
+    MessageType
 };
