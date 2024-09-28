@@ -42,24 +42,16 @@ class Parser_PCC3:
 
     def parse_date(self, value: str):
         match = re.search(
-            r"(?P<forward>\d{2}-\d{2}-\d{4}})|(?P<reverse>\d{4}-\d{2}-\d{2})|(?P<word>[a-ząćęłńóśżźA-ZĄĆĘŁŃÓŚŻŹ]+|(?:the *)?day *before *yester *day)",
+            r"(?P<forward>\d{2}-\d{2}-\d{4})|(?P<reverse>\d{4}-\d{2}-\d{2})|(?P<word>[a-ząćęłńóśżźA-ZĄĆĘŁŃÓŚŻŹ]+)",
             value,
         )
-        print(match.group("forward"))
         if not match:
             return None
-        try:
-            date = match.group("reverse")
+        if date := match.group("forward"):
             return f"{date[6:]}-{date[3:5]}-{date[0:2]}"
-        except IndexError:
-            pass
-        try:
-            return match.group("reverse")
-        except IndexError:
-            pass
-        try:
-            date = match.group("word").lower().replace(" ", "")
-
+        if date := match.group("reverse"):
+            return date
+        if date := match.group("word").lower().replace(" ", ""):
             match date:
                 case "wczoraj" | "yesterday":
                     return (datetime.date.today() - datetime.timedelta(1)).strftime(
@@ -69,9 +61,6 @@ class Parser_PCC3:
                     return (datetime.date.today() - datetime.timedelta(2)).strftime(
                         "%Y-%m-%d"
                     )
-
-        except IndexError:
-            pass
         return None
 
     def parse_postal(self, value: str):
@@ -222,14 +211,14 @@ class Parser_PCC3:
             f"Ostateczna wartość pieniężna: {self.fields['D']['final_value']}\n"
             f"Opis przedmiotu: {self.fields['D']['item_description']}"
         )
-    
+
     def no_none(self, value, default='0'):
         return value if value is not None else default
 
     def generate_xml(self):
         # Tworzenie elementów XML
         deklaracja = ET.Element('Deklaracja', xmlns="http://crd.gov.pl/wzor/2023/12/13/13064/")
-        
+
         # Nagłówek
         naglowek = ET.SubElement(deklaracja, 'Naglowek')
         kod_formularza = ET.SubElement(naglowek, 'KodFormularza', kodSystemowy="PCC-3 (6)", kodPodatku="PCC", rodzajZobowiazania="Z", wersjaSchemy="1-0E")
@@ -242,7 +231,7 @@ class Parser_PCC3:
         data.text = self.no_none(self.fields['A']['transaction_date'])
         kod_urzedu = ET.SubElement(naglowek, 'KodUrzedu')
         kod_urzedu.text = "0271"
-        
+
         # Podmiot1 (Podatnik)
         podmiot1 = ET.SubElement(deklaracja, 'Podmiot1', rola="Podatnik")
         osoba_fizyczna = ET.SubElement(podmiot1, 'OsobaFizyczna')
@@ -254,7 +243,7 @@ class Parser_PCC3:
         nazwisko.text = self.no_none(self.fields['B']['last_name'])
         data_urodzenia = ET.SubElement(osoba_fizyczna, 'DataUrodzenia')
         data_urodzenia.text = self.no_none(self.fields['B']['birth_date'])
-        
+
         # Adres zamieszkania
         adres_zamieszkania = ET.SubElement(podmiot1, 'AdresZamieszkaniaSiedziby', rodzajAdresu="RAD")
         adres_pol = ET.SubElement(adres_zamieszkania, 'AdresPol')
@@ -293,7 +282,7 @@ class Parser_PCC3:
         # Zwięzłe określenie treści i przedmiotu czynności cywilnoprawnej
         p23 = ET.SubElement(pozycje_szczegolowe, 'P_23')
         p23.text = self.no_none(self.fields['D']['item_description'])
-        
+
         # Podatki i wartości
         value_24 = int(self.no_none(self.fields['D']['final_value'], 0))
         tax_25 = round(value_24 * 0.01)
@@ -316,11 +305,11 @@ class Parser_PCC3:
         p53.text = str(result_53)
         p62 = ET.SubElement(pozycje_szczegolowe, 'P_62')
         p62.text = "1"
-        
+
         # Pouczenia
         pouczenia = ET.SubElement(deklaracja, 'Pouczenia')
         pouczenia.text = "1"
-        
+
         xml_str = ET.tostring(deklaracja, encoding="utf-8", method="xml")
 
         return xml_str
