@@ -1,6 +1,8 @@
 import re
 import xml.etree.ElementTree as ET
 import datetime
+from .chat import message as MSG
+from copy import deepcopy
 
 class Parser_PCC3:
     def __init__(self):
@@ -31,6 +33,83 @@ class Parser_PCC3:
                 "item_description": "",
             },
         }
+
+        self.translates = {
+            'A': {
+                "transaction_date": "Data dokonania czynności",
+                "office_code": "Nazwa urzędu skarbowego",
+            },
+            'B': {
+                "first_name": "Imię",
+                "last_name": "Nazwisko",
+                "pesel": "Pesel",
+                "birth_date": "Data urodzenia",
+                "father_name": "Imię ojca",
+                "mother_name": "Imię Matki",
+                "province": "Województwo",
+                "district": "Powiat",
+                "municipality": "Gmina",
+                "street": "Ulica lub osiedle",
+                "neighborhood": "Miejscowość",
+                "house_number": "Numer domu",
+                "apartment_number": "Numer lokalu",
+                "city": "Miasto",
+                "postal_code": "Kod pocztowy",
+            },
+            'D': {
+                "final_value": "Wartość pieniężna",
+                "item_description": "Opis przedmiotu",
+            },
+        }
+
+    def message(self, message):
+        system_message = '''
+Pierwsze imię: x
+Nazwisko: x
+Pesel: x
+data urodzenia: x
+Imię ojca: x
+Imię matki: x
+województwo zamieszkania: x
+powiat zamieszkania: x
+gmina zamieszkania: x
+ulica lub osiedle zamieszkania: x
+nr domu zamieszkania: x
+nr lokalu zamieszkania: x
+miejscowość zamieszkania: x
+kod pocztowy zamieszkania: x
+Data dokonania czynności: x
+Ostateczna wartość pieniężna: x
+Opis przedmiotu w formie bezosobowej: x
+Nazwa urzędu skarbowego w mianowniku: x'''
+        response = MSG(system_message, message)
+        before = deepcopy(self.fields)
+        self.parse_message(response)
+        return self.find_differences(before, self.fields)
+
+    def find_differences(self, dict1, dict2):
+        differences = []
+
+        for key in dict1:
+            if key in dict2:
+                if isinstance(dict1[key], dict) and isinstance(dict2[key], dict):
+                    for subkey in dict1[key]:
+                        if subkey in dict2[key] and dict1[key][subkey] != dict2[key][subkey]:
+                            differences.append({'type':subkey, 'value':dict2[key][subkey], 'category':key})
+                else:
+                    continue
+        return differences
+    
+    def update_value(self, category, key, value):
+        self.fields[category][key] = value
+    
+    def get_what_needed(self):
+        needed = { 'A':[],'B':[],'D':[] }
+        for category in self.fields:
+            for key in self.fields[category]:
+                if len(self.fields[category][key]) == 0:
+                    needed[category].append(self.translates[category][key])
+        return needed
 
     def parse_word(self, value: str):
         match = re.search(r"[a-ząćęłńóśżźA-ZĄĆĘŁŃÓŚŻŹ]+", value)
