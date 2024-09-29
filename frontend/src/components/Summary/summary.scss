@@ -4,6 +4,20 @@
     padding: 2rem;
     overflow-y: scroll;
 
+    @media (max-width: l.$max-width-mobile) {
+        background: #fff;
+        box-sizing: border-box;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        right: 100%;
+        transition: right 0.5s;
+
+        &.active {
+            right: 0;
+        }
+    }
+
     .summary-title {
         font-size: 1.7rem;
     }

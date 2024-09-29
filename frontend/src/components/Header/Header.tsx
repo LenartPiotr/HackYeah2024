@@ -6,8 +6,19 @@ import { Settings } from '../../types';
 import './header.scss';
 import { Languages } from '../../enums';
 import { CiImport, CiExport } from "react-icons/ci";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { useRef } from 'react';
 
-const Header = ({ settings, changeLanguage }: HeaderProps) => {
+const Header = ({ settings, changeLanguage, setSummaryToggle }: HeaderProps) => {
+    const settingsPanel = useRef<HTMLDivElement>(null);
+
+    const handleSummary = () => {
+        setSummaryToggle(value => !value);
+    }
+
+    const handleMenu = () => {
+        settingsPanel.current?.classList.toggle("active");
+    }
 
     const handleXml = () => {
         const d = new Date();
@@ -31,12 +42,20 @@ const Header = ({ settings, changeLanguage }: HeaderProps) => {
     return (
         <header className='header-main'>
             <div className='form-info'>
-                <h2>PCC-3</h2>
+                <div className='heading-wrapper'>
+                    <h2>PCC-3</h2>
+                    <button className='summary-toggle' onClick={handleSummary}>
+                        Podsumowanie
+                    </button>
+                    <button className='menu-toggle' onClick={handleMenu}>
+                        <GiHamburgerMenu />
+                    </button>
+                </div>
                 <p>{messages['form-info-subtitle'][settings.language]}</p>
             </div>
-            <div className='settings-panel'>
+            <div className='settings-panel' ref={settingsPanel}>
                 <div className='languages'>
-                    <p className='language-title'>{messages['language-title'][settings.language]}</p>
+                    <span className='language-title'>{messages['language-title'][settings.language]}</span>
                     <div className="flags">
                         <img 
                             src={PolishFlag} 
@@ -93,6 +112,7 @@ const messages = {
 type HeaderProps = {
     settings: Settings,
     changeLanguage: (type: Languages) => void,
+    setSummaryToggle: (value: (val: boolean) => boolean) => void,
 };
 
 export default Header;

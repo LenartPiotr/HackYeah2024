@@ -3,7 +3,7 @@ import { Settings, SummaryType } from '../../types';
 import { categoryMap, typeMap } from '../../constans';
 import { FaRegEdit } from "react-icons/fa";
 
-const Summary = ({ settings, responses }: SummaryProps) => {
+const Summary = ({ settings, responses, summaryToggle }: SummaryProps) => {
     const categories = new Set(responses.map((summary: SummaryType) => summary.category));
 
     const summaryElements = [...categories].map((category: string) => {
@@ -36,7 +36,7 @@ const Summary = ({ settings, responses }: SummaryProps) => {
     });
 
     return (
-        <div className='main-summary'>
+        <div className={`main-summary ${summaryToggle && 'active'}`}>
             <h2 className='summary-title'>{messages['summary-title'][settings.language]}</h2>
             {...summaryElements}
             <button className='summary-accept'>{messages['accept-button'][settings.language]}</button>
@@ -65,6 +65,7 @@ const messages = {
 type SummaryProps = {
     settings: Settings,
     responses: SummaryType[],
+    summaryToggle: boolean,
 };
 
 export default Summary;

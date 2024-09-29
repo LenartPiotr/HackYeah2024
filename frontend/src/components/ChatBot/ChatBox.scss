@@ -6,16 +6,24 @@
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
+
+	@media (max-width: l.$max-width-mobile) { 
+		flex-basis: 100%;
+	}
 	
-	& .messages {
+	.messages {
 		display: flex;
 		flex-direction: column;
 		flex-grow: 1;
 		gap: 15px;
 		overflow-y: auto;
-		padding: 25px 40px;
+		padding: 1.5rem 2rem;
 
-		& .message-wrapper {
+		@media (max-width: l.$max-width-mobile) { 
+			padding: 1rem;
+		}
+
+		.message-wrapper {
 			align-items: center;
 			display: flex;
 			gap: 20px;
@@ -29,7 +37,7 @@
 				}
 			}
 
-			& .avatar {
+			.avatar {
 				background: url("../../assets/avatar-placeholder.jpg");
 				background-size: cover;
 				background-position: center center;
@@ -40,7 +48,7 @@
 				height: 64px;
 			}
 
-			& .message {
+			.message {
 				background-color: #fff;
 				border: 1px solid l.$primary-color;
 				border-radius: 25px;
@@ -51,43 +59,54 @@
 		}
 	}
 
-	& .message.from-user {
+	.message.from-user {
 		margin-left: unset;
 		margin-right: auto;
 	}
 
-	& .input-row {
+	.input-row {
 		align-items: end;
 		display: flex;
-		gap: 25px;
+		gap: 1.5rem;
 		height: 50px;
 		padding: 10px 40px 25px;
 
-		& .input-wrapper {
+		@media (max-width: l.$max-width-mobile) {
+			gap: 1rem;
+			padding: 1rem;
+		}
+
+		.input-wrapper {
 			border: 1px solid #2350a3;
 			border-radius: 25px;
 			display: flex;
 			flex-grow: 1;
 
-			& input {
+			input {
 				flex-grow: 1;
 				font-size: 20px;
 				padding: 10px 15px;
 				border: none;
 				outline: none;
 				border-radius: 25px;
+
+				@media (max-width: l.$max-width-mobile) { width: 0; }
 			}
 
-			& button {
+			button {
 				border: none;
 				border-radius: 0 25px 25px 0;
 				cursor: pointer;
 				padding: 0 25px;
-			}
 
+				svg {
+					width: 20px;
+					height: 20px;
+				}
+			}
 		}
 
-		& .send {
+		button {
 			background-color: l.$primary-color;
 			color: #fff;
 		}
