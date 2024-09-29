@@ -9,7 +9,7 @@ import { CiImport, CiExport } from "react-icons/ci";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useRef } from 'react';
 
-const Header = ({ settings, changeLanguage, setSummaryToggle }: HeaderProps) => {
+const Header = ({ settings, changeLanguage, setSummaryToggle, formName }: HeaderProps) => {
     const settingsPanel = useRef<HTMLDivElement>(null);
 
     const handleSummary = () => {
@@ -24,7 +24,7 @@ const Header = ({ settings, changeLanguage, setSummaryToggle }: HeaderProps) => 
         <header className='header-main'>
             <div className='form-info'>
                 <div className='heading-wrapper'>
-                    <h2 className='heading-form'>PCC-3</h2>
+                    <h2 className='heading-form'>{formName ?? messages['form-title'][settings.language]}</h2>
                     <button className='summary-toggle' onClick={handleSummary}>
                         {messages['summary'][settings.language]}
                     </button>
@@ -70,6 +70,11 @@ const Header = ({ settings, changeLanguage, setSummaryToggle }: HeaderProps) => 
 };
 
 const messages = {
+    'form-title': {
+        'polish': 'Nie wybrano formularza',
+        'english': 'Form not yet selected',
+        'ukrainian': 'Форма не вибрана',
+    },
     'form-info-subtitle': {
         'polish': 'Deklaracja w sprawie podatku od czynności cywilnoprawnych',
         'english': 'Statement regarding tax on civil law transactions',
@@ -96,6 +101,7 @@ type HeaderProps = {
     settings: Settings,
     changeLanguage: (type: Languages) => void,
     setSummaryToggle: (value: (val: boolean) => boolean) => void,
+    formName: string|null
 };
 
 export default Header;
