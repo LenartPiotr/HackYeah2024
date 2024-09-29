@@ -166,7 +166,7 @@ Nazwa urzędu skarbowego w mianowniku: x'''
         return value
         
     def parse_no_bot_failure(self, value: str):
-        if value in ['Nie', 'Niestety', 'x', 'Nie podano', 'x (Nie podano)', '(Nie podano)', 'nie']:
+        if value in ['Nie', 'Niestety', 'x', 'Nie podano', 'x (Nie podano)', '(Nie podano)', 'nie', 'nie podano']:
             return None
         return value
 
@@ -254,7 +254,7 @@ Nazwa urzędu skarbowego w mianowniku: x'''
                 "parse": [self.parse_money, self.parse_no_bot_failure],
                 'validate': self.validate
             },
-            r"Opis przedmiotu: ([^\n]+)": {
+            r"Opis przedmiotu w formie bezosobowej: ([^\n]+)": {
                 "field": "item_description",
                 'category': 'D',
                 "parse": [self.parse_sentence, self.parse_no_bot_failure],
