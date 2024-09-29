@@ -17,6 +17,7 @@ test_answers = [[], [
 ], [
     {'type': 'pesel', 'value': '99091728838', 'category': 'B'},
     {'type': 'birth_date', 'value': '1999-09-17', 'category': 'B'},
+    []
 ]]
 
 
