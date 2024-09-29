@@ -33,7 +33,7 @@ def message(response):
 
 @app.post('/select_document')
 def select_document(document):
-    mainApp.change_document(document)
+    return mainApp.change_document(document)
 
 @app.get("/xml", response_class=Response)
 def get_xml():
