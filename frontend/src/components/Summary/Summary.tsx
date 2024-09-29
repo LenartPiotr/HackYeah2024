@@ -1,7 +1,7 @@
 import './summary.scss';
 import { Settings, SummaryType } from '../../types';
-import { categoryMap, typeMap } from '../../constans';
-import { FaRegEdit } from "react-icons/fa";
+import { categoryMap } from '../../constans';
+import SummaryValue from '../SummaryValue/SummaryValue';
 
 const Summary = ({ settings, responses, summaryToggle }: SummaryProps) => {
     const categories = new Set(responses.map((summary: SummaryType) => summary.category));
@@ -11,18 +11,12 @@ const Summary = ({ settings, responses, summaryToggle }: SummaryProps) => {
         const categoryData = responses
             .filter((summary: SummaryType) => summary.category === category)
             .map((summary: SummaryType) => (
-                <div className='category-response-wrapper'>
-                    <div className='category-response-block'>
-                        <div className='category-type'>{typeMap[summary.type as keyof typeof typeMap][settings.language]}</div>
-                        <div className='category-response'>{summary.value}</div>
-                    </div>
-                    <div className='edit-response-button'>
-                        <FaRegEdit 
-                            size="20px"
-                        />
-                        {messages['edit'][settings.language]}
-                    </div>
-                </div>
+                <SummaryValue
+                    type={summary.type}
+                    value={summary.value}
+                    category={summary.category}
+                    language={settings.language}
+                />
             ))
 
         return (
@@ -49,11 +43,6 @@ const messages = {
         'polish': 'Podsumowanie',
         'english': 'Summary',
         'ukrainian': 'Резюме'
-    },
-    'edit': {
-        'polish': 'Edytuj',
-        'english': 'Edit',
-        'ukrainian': 'Редагувати',
     },
     'accept-button': {
         'polish': 'Akceptuj i zapisz',
