@@ -6,6 +6,10 @@ import SummaryValue from '../SummaryValue/SummaryValue';
 const Summary = ({ settings, responses, summaryToggle }: SummaryProps) => {
     const categories = new Set(responses.map((summary: SummaryType) => summary.category));
 
+    const sortedCategories = Array.from(categories).sort((a, b) => {
+        return a.localeCompare(b);
+    });
+
     const handleXml = () => {
         const d = new Date();
         let [date, time] = d.toLocaleString().split(", ");
@@ -25,7 +29,7 @@ const Summary = ({ settings, responses, summaryToggle }: SummaryProps) => {
             });
     };
 
-    const summaryElements = [...categories].map((category: string) => {
+    const summaryElements = [...sortedCategories].map((category: string) => {
         
         const categoryData = responses
             .filter((summary: SummaryType) => summary.category === category)
@@ -50,9 +54,23 @@ const Summary = ({ settings, responses, summaryToggle }: SummaryProps) => {
 
     return (
         <div className={`main-summary ${summaryToggle && 'active'}`}>
-            <h2 className='summary-title'>{messages['summary-title'][settings.language]}</h2>
-            {...summaryElements}
-            <button className='summary-accept' onClick={handleXml}>{messages['accept-button'][settings.language]}</button>
+            {
+                responses.length === 0 ? (
+                    <h2 className='summary-title'>
+                        {messages['empty-summary-title'][settings.language]}
+                    </h2>
+                ) : (
+                    <>
+                        <h2 className='summary-title'>
+                            {messages['summary-title'][settings.language]}
+                        </h2>
+                        {summaryElements}
+                        <button className='summary-accept' onClick={handleXml}>
+                            {messages['accept-button'][settings.language]}
+                        </button>
+                    </>
+                )
+            }
         </div>
     )
 };
@@ -67,6 +85,11 @@ const messages = {
         'polish': 'Akceptuj i zapisz',
         'english': 'Confirm and save',
         'ukrainian': 'Підтвердити та зберегти'
+    },
+    'empty-summary-title': {
+        'polish': 'Nie znaleziono żadnych pól formularza',
+        'english': 'No form fields found',
+        'ukrainian': 'Поля форми не знайдено'
     }
 }
 
