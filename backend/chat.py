@@ -20,16 +20,16 @@ class Chat:
         if parser is not None:
             fields = parser.get_what_needed()
             if fields == {}:
-                return 'Basinga!'
+                return 'To już wszystko. Upewnij się, że wszystkie dane zostały wprowadzone prawidłowo. Twój formularz jest gotowy do pobrania.'
             else:
-                return self.ask_for_more_info(fields)
+                return self.ask_for_more_info(fields, message)
             
         # przykład: fields: {'A':["Kod urzędu skarbowego"], 'B':["Imię", "Nazwisko"], 'D':[]}
         return "Basinga!"
     
     # Zwraca tablice wszystkich wiadomości napisanych przez użytkownika do analizy do parsera
     def getHistory(self):
-        return self.history
+        return [x['content'] for x in self.history]
     
     # Niech wygeneruje tekst nie rozpoznania parsera - parser: str
     def undefinedParser(self, parser):
@@ -37,13 +37,14 @@ class Chat:
     
     # Ustawiony nowy parser - newParser to obiekt
     def switchParser(self, newParser):
-        return 'Swing to new Parser!'
+        fields = newParser.get_what_needed()
+        return self.ask_for_more_info(fields)
     
     def inform_about_PCC(self, line):
         response = self.client.chat(model='llama3.2', messages=[
             {
                 'role': 'system', 'content': self.pcc_system_prompt,
-            }] + self.history + [
+            }] + [
             {
                 'role': 'user', 'content': line,
             },
@@ -55,13 +56,18 @@ class Chat:
 
         return response
     
-    def ask_for_more_info(self, fields):
+    def ask_for_more_info(self, fields, message = ''):
         highest_category = sorted(fields.keys())[0]
         missing_info = ', '.join(fields[highest_category])
-        system = self.more_info_system_prompt.replace('<missing_info', missing_info)
-        response = self.client.chat(model='llama3.2', messages=[
+        system = self.more_info_system_prompt.replace('<missing_info>', missing_info)
+        messages = [
             {'role': 'system', 'content': system}
-        ] + self.history)
+        ]
+        if len(message) != 0:
+            messages.append({'role': 'user', 'content': message})
+        
+        print(messages)
+        response = self.client.chat(model='llama3.2', messages=messages)
 
         response = response['message']['content']
         self.history.append({

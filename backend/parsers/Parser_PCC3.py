@@ -36,7 +36,7 @@ class Parser_PCC3:
 
         self.translates = {
             'A': {
-                "transaction_date": "Data dokonania czynności",
+                "transaction_date": "Data zakupu podmiotu",
                 "office_code": "Nazwa urzędu skarbowego",
             },
             'B': {
@@ -166,7 +166,7 @@ Nazwa urzędu skarbowego w mianowniku: x'''
         return value
         
     def parse_no_bot_failure(self, value: str):
-        if value in ['Nie', 'Niestety', 'x', 'Nie podano', 'x (Nie podano)', '(Nie podano)', 'nie', 'nie podano']:
+        if value in ['Nie', 'Niestety', 'x', 'Nie podano', 'x (Nie podano)', '(Nie podano)', 'nie', 'nie podano', '[brak informacji]', 'brak']:
             return None
         return value
 
