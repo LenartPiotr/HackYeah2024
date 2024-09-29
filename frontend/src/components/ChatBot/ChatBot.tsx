@@ -7,6 +7,8 @@ import axios from "axios";
 import { IoSendSharp } from "react-icons/io5";
 import SpeechToText from "../SpeechToText/SpeechToText";
 
+const formNames: string[] = ["PCC-2", "PCC-3", "PCC-3/A", "PCC-4", "PCC-4/A", "SD-2", "SD-3", "SD-3/A", "SD-Z2"];
+
 const ChatBot = ({ addResponses }: ChatBotProps) => {
   const [message, setMessage] = useState<string>("");
   const [chatData, setChatData] = useState<MessageType[]>([{
@@ -16,10 +18,52 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
   const messageBox = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    window.addEventListener('eFormName', handleFormEvent);
+  }, []);
+
+  const handleFormEvent = (event: any) => {
+    documentMutation.mutate({ response: event.detail.msg });
+  }
+
+  const postDocument = async (data: { response: string }) => {
+    const response = await axios.post(`http://127.0.0.1:8000/select_document?document=${data.response}`);
+    return response.data;
+  }
+
   const postMessage = async (data: { response: string }) => {
     const response = await axios.post(`http://127.0.0.1:8000/message?response=${data.response}`);
     return response.data;
   };
+
+  const parseMessage = (message: string) => {
+    for(const formName of formNames) {
+      const index = message.indexOf(formName);
+      if(index >= 0) {
+        const insert = `<a onclick="window.dispatchEvent(new CustomEvent('eFormName', {
+          detail: { msg: '${formName}' }
+        }))" href="#">${formName}</a>`;
+        message = message.slice(0, index) + insert + message.slice(index + formName.length);
+      }
+    }
+    return message;
+  }
+
+  const documentMutation = useMutation(postDocument, {
+    onMutate: () => {
+      // setChatData(chatData => [...chatData, {text: message, fromUser: true}]);
+      setIsLoading(true);
+    },
+    onSuccess: (data) => {
+      setChatData(chatData => [...chatData, { text: parseMessage(data.next_question) }]);
+      addResponses(data.responses);
+      setIsLoading(false);
+    },
+    onError: (error) => {
+      console.error("Error sending message:", error);
+      setIsLoading(false);
+    },
+  });
 
   const mutation = useMutation(postMessage, {
     onMutate: () => {
@@ -27,7 +71,7 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
       setIsLoading(true);
     },
     onSuccess: (data) => {
-      setChatData(chatData => [...chatData, { text: data.next_question }]);
+      setChatData(chatData => [...chatData, { text: parseMessage(data.next_question) }]);
       addResponses(data.responses);
       setIsLoading(false);
     },
@@ -65,9 +109,7 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
         {chatData.map((message, index) => <>
           <div key={index} className={`message-wrapper ${message.fromUser ? "from-user" : ""}`}>
             {!message.fromUser && <div className="avatar"></div>}
-            <span className="message">
-              {message.text}
-            </span>
+            <span className="message" dangerouslySetInnerHTML={{__html: message.text}} />
           </div>
         </>)}
         {isLoading && <img width="32" height="32" src={loadingGif} />}
