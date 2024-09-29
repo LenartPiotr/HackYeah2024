@@ -10,6 +10,15 @@ test_messages = ['Kupno samochodu wiąże się z potrzebą odprowadzenia podatku
 
 test_messages_index = -1
 
+test_answers = [[], [
+    {'type': 'name', 'value': 'Jan', 'category': 'B'},
+    {'type': 'surname', 'value': 'Kowalski', 'category': 'B'},
+    {'type': 'final_value', 'value': '3000', 'category': 'D'},
+], [
+    {'type': 'pesel', 'value': '99091728838', 'category': 'B'},
+    {'type': 'birth_date', 'value': '1999-09-17', 'category': 'B'},
+]]
+
 
 app = FastAPI()
 
@@ -31,7 +40,10 @@ def get():
 @app.post("/message")
 def message(response):
     test_messages_index += 1
-    return test_messages[test_messages_index]
+    return {
+        'responses': test_answers[test_messages_index],
+        'next_question': test_messages[test_messages_index]
+    }
     return mainApp.message(response)
     # return {
     #     'responses': [
