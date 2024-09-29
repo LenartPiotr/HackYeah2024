@@ -20,25 +20,6 @@ const Header = ({ settings, changeLanguage, setSummaryToggle }: HeaderProps) => 
         settingsPanel.current?.classList.toggle("active");
     }
 
-    const handleXml = () => {
-        const d = new Date();
-        let [date, time] = d.toLocaleString().split(", ");
-        date = date.split(".").reverse().join("_");
-        time = time.split(":").join("_");
-          
-        fetch("http://127.0.0.1:8000/xml")
-            .then(res => res.blob())
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `formularz_${date}_${time}.xml`;
-                document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-                a.click();    
-                a.remove();  //afterwards we remove the element again  
-            });
-    };
-
     return (
         <header className='header-main'>
             <div className='form-info'>
@@ -82,9 +63,6 @@ const Header = ({ settings, changeLanguage, setSummaryToggle }: HeaderProps) => 
                             onClick={() => changeLanguage(Languages.ukrainian)}
                         />
                     </div>
-                </div>
-                <div className='export-functions'>
-                    <div className='function' onClick={handleXml}>{messages['generate-xml'][settings.language]}<CiExport size="25px" /></div>
                 </div>
             </div>
         </header>
