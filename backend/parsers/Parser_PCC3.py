@@ -159,95 +159,100 @@ Nazwa urzędu skarbowego w mianowniku: x'''
 
     def validate(self, value: str):
         return value
+        
+    def parse_no_bot_failure(self, value: str):
+        if value in ['Nie', 'Niestety', 'x', 'Nie podano', 'x (Nie podano)', '(Nie podano)', 'nie']:
+            return None
+        return value
 
     def parse_message(self, message: str):
         patterns = {
             r"Pierwsze imię: ([^\n]+)": {
                 "field": "first_name",
                 'category': 'B',
-                "parse": self.parse_word,
+                "parse": [self.parse_word, self.parse_no_bot_failure],
                 "validate": self.validate
             },
-            r"Nazwisko: ([^\n]+)": {"field": "last_name", 'category': 'B', "parse": self.parse_word, 'validate': self.validate},
-            r"Pesel: ([^\n]+)": {"field": "pesel", 'category': 'B', "parse": self.parse_pesel, 'validate': self.validate},
+            r"Nazwisko: ([^\n]+)": {"field": "last_name", 'category': 'B', "parse": [self.parse_word, self.parse_no_bot_failure], 'validate': self.validate},
+            r"Pesel: ([^\n]+)": {"field": "pesel", 'category': 'B', "parse": [self.parse_pesel, self.parse_no_bot_failure], 'validate': self.validate},
             r"data urodzenia: ([^\n]+)": {
                 "field": "birth_date",
                 'category': 'B',
-                "parse": self.parse_date,
+                "parse": [self.parse_date, self.parse_no_bot_failure],
                 'validate': self.validate
             },
-            r"Imię ojca: ([^\n]+)": {"field": "father_name", 'category': 'B', "parse": self.parse_word, 'validate': self.validate},
-            r"Imię matki: ([^\n]+)": {"field": "mother_name", 'category': 'B', "parse": self.parse_word, 'validate': self.validate},
+            r"Imię ojca: ([^\n]+)": {"field": "father_name", 'category': 'B', "parse": [self.parse_word, self.parse_no_bot_failure], 'validate': self.validate},
+            r"Imię matki: ([^\n]+)": {"field": "mother_name", 'category': 'B', "parse": [self.parse_word, self.parse_no_bot_failure], 'validate': self.validate},
             r"województwo zamieszkania: ([^\n]+)": {
                 "field": "province",
                 'category': 'B',
-                "parse": self.parse_word,
+                "parse": [self.parse_word, self.parse_no_bot_failure],
                 'validate': self.validate
             },
             r"powiat zamieszkania: ([^\n]+)": {
                 "field": "district",
                 'category': 'B',
-                "parse": self.parse_word,
+                "parse": [self.parse_word, self.parse_no_bot_failure],
                 'validate': self.validate
             },
             r"gmina zamieszkania: ([^\n]+)": {
                 "field": "municipality",
                 'category': 'B',
-                "parse": self.parse_word,
+                "parse": [self.parse_word, self.parse_no_bot_failure],
                 'validate': self.validate
             },
             r"ulica zamieszkania: ([^\n]+)": {
                 "field": "street",
                 'category': 'B',
-                "parse": self.parse_word,
+                "parse": [self.parse_word, self.parse_no_bot_failure],
                 'validate': self.validate
             },
             r"osiedle zamieszkania: ([^\n]+)": {
                 "field": "neighborhood",
                 'category': 'B',
-                "parse": self.parse_word,
+                "parse": [self.parse_word, self.parse_no_bot_failure],
                 'validate': self.validate
             },
             r"nr domu zamieszkania: ([^\n]+)": {
                 "field": "house_number",
                 'category': 'B',
-                "parse": self.parse_number,
+                "parse": [self.parse_number, self.parse_no_bot_failure],
                 'validate': self.validate
             },
             r"nr lokalu zamieszkania: ([^\n]+)": {
                 "field": "apartment_number",
                 'category': 'B',
-                "parse": self.parse_number,
+                "parse": [self.parse_number, self.parse_no_bot_failure],
                 'validate': self.validate
             },
             r"miejscowość zamieszkania: ([^\n]+)": {
                 "field": "city",
                 'category': 'B',
-                "parse": self.parse_word,
+                "parse": [self.parse_word, self.parse_no_bot_failure],
                 'validate': self.validate
             },
             r"kod pocztowy zamieszkania: ([^\n]+)": {
                 "field": "postal_code",
                 'category': 'B',
-                "parse": self.parse_postal,
+                "parse": [self.parse_postal, self.parse_no_bot_failure],
                 'validate': self.validate
             },
             r"Data dokonania czynności: ([^\n]+)": {
                 "field": "transaction_date",
                 'category': 'A',
-                "parse": self.parse_date,
+                "parse": [self.parse_date, self.parse_no_bot_failure],
                 'validate': self.validate
             },
             r"Ostateczna wartość pieniężna: ([^\n]+)": {
                 "field": "final_value",
                 'category': 'D',
-                "parse": self.parse_money,
+                "parse": [self.parse_money, self.parse_no_bot_failure],
                 'validate': self.validate
             },
             r"Opis przedmiotu: ([^\n]+)": {
                 "field": "item_description",
                 'category': 'D',
-                "parse": self.parse_sentence,
+                "parse": [self.parse_sentence, self.parse_no_bot_failure],
                 'validate': self.validate
             },
         }
@@ -263,7 +268,12 @@ Nazwa urzędu skarbowego w mianowniku: x'''
                         entry['category'],
                     )
                     try:
-                        self.fields[category][field] = validate(parse(value))
+                        res = value
+                        for func in parse:
+                            res = func(res)
+                            if res == None:
+                                raise Exception
+                        self.fields[category][field] = validate(res)
                     except Exception:
                         pass
             except IndexError:

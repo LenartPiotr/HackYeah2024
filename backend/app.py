@@ -27,6 +27,7 @@ class App:
                 'responses': [],
                 'next_question': self.chat.undefinedParser(document)
             }
+        self.selectedParser = newParser
         answer = self.chat.switchParser(newParser)
         allMessages = self.chat.getHistory()
         responses = newParser.message('\n'.join(allMessages))
