@@ -51,7 +51,6 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
 
   const documentMutation = useMutation(postDocument, {
     onMutate: () => {
-      // setChatData(chatData => [...chatData, {text: message, fromUser: true}]);
       setIsLoading(true);
     },
     onSuccess: (data) => {
