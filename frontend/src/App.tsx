@@ -14,6 +14,7 @@ function App() {
   });
 
   const [responses, setResponses] = useState<SummaryType[]>([]);
+  const [summaryToggle, setSummaryToggle] = useState<boolean>(false);
 
   const addResponses = (responseData: SummaryType[])  => setResponses((prev) => [...prev, ...responseData]);
 
@@ -26,10 +27,10 @@ function App() {
   return (
     <>
       <HeaderBar />
-      <Header settings={settings} changeLanguage={changeBotLanguage} />
+      <Header settings={settings} changeLanguage={changeBotLanguage} setSummaryToggle={setSummaryToggle} />
       <main className='main-layout'>
         <ChatBot addResponses={addResponses} />
-        <Summary settings={settings} responses={responses} />
+        <Summary settings={settings} responses={responses} summaryToggle={summaryToggle} />
       </main>
     </>
   )

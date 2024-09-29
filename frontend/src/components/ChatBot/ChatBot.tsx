@@ -4,6 +4,7 @@ import { MessageType, SummaryType } from '../../types';
 import loadingGif from "../../assets/loading.gif";
 import { useMutation } from "react-query";
 import axios from "axios";
+import { IoSendSharp } from "react-icons/io5";
 
 const ChatBot = ({ addResponses }: ChatBotProps) => {
   const [message, setMessage] = useState<string>("");
@@ -73,7 +74,9 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
       <div className="input-row">
         <div className="input-wrapper">
           <input name="message" ref={input} value={message} onChange={(e) => setMessage(e.target.value)} autoComplete="off"/>
-          <button className="send" onClick={handleButton}>-&gt;</button>
+          <button className="send" onClick={handleButton}>
+            <IoSendSharp />
+          </button>
         </div>
         <button type="button" className="mic">X</button>
       </div>
