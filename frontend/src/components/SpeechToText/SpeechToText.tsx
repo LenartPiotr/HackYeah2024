@@ -16,6 +16,11 @@ const SpeechToText = ({ setMessage }: SpeechToTextProps) => {
             setMessage(transcript);
         }
 
+        recognition.onend = async function() {
+            recognition.stop();
+            setIsActive(false);
+        }
+
         if(!isActive) {
             recognition.start();
             setIsActive(true);
