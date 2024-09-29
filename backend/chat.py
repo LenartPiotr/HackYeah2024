@@ -5,6 +5,7 @@ class Chat:
     def __init__(self):
         self.client = Client(host='http://localhost:11434')
         self.history = []
+        self.lastQuestion = ''
         with open(Path(__file__).parent / 'system_prompts' / 'inform_about_pcc.txt', encoding='utf-8') as f:
             self.pcc_system_prompt = f.read()
         with open(Path(__file__).parent / 'system_prompts' / 'ask_for_more_info.txt', encoding='utf-8') as f:
@@ -56,15 +57,15 @@ class Chat:
 
         return response
     
-    def ask_for_more_info(self, fields, message = ''):
+    def ask_for_more_info(self, fields, message):
         highest_category = sorted(fields.keys())[0]
         missing_info = ', '.join(fields[highest_category])
         system = self.more_info_system_prompt.replace('<missing_info>', missing_info)
         messages = [
-            {'role': 'system', 'content': system}
+            {'role': 'system', 'content': system},
+            {'role': 'assistant', 'content': self.lastQuestion},
+            {'role': 'user', 'content': message}
         ]
-        if len(message) != 0:
-            messages.append({'role': 'user', 'content': message})
         
         print(messages)
         response = self.client.chat(model='llama3.2', messages=messages)
@@ -73,5 +74,7 @@ class Chat:
         self.history.append({
             'role': 'assistant', 'content': response
         })
+
+        self.lastQuestion = response
 
         return response

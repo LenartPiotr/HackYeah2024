@@ -166,7 +166,7 @@ Nazwa urzędu skarbowego w mianowniku: x'''
         return value
         
     def parse_no_bot_failure(self, value: str):
-        if value in ['Nie', 'Niestety', 'x', 'Nie podano', 'x (Nie podano)', '(Nie podano)', 'nie', 'nie podano', '[brak informacji]', 'brak']:
+        if value in ['Nie', 'Niestety', 'x', 'Nie podano', 'x (Nie podano)', 'x (nie podano)', '(Nie podano)', 'nie', 'nie podano', '[brak informacji]', 'brak']:
             return None
         return value
 
