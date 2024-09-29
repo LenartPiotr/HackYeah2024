@@ -11,7 +11,7 @@ const SummaryValue = ({type, value, category, language}: SummaryTypeProps) => {
     const [inputValue, setInputValue] = useState(value);
 
     const postEditData = async (data: {type: string, value: string, category: string}) => {
-        const response = await axios.post(`http://127.0.0.1:8000/edit`, data);
+        const response = await axios.post(`http://127.0.0.1:8000/edit?category=${data.category}&type=${data.type}&value=${data.value}`);
         return response.data;
     };
 
@@ -24,7 +24,7 @@ const SummaryValue = ({type, value, category, language}: SummaryTypeProps) => {
     const handleSave = () => {
         setIsEditOpen((prev) => !prev);
 
-        mutation.mutate({ type: type, value: value, category: category });
+        mutation.mutate({ type: type, value: inputValue, category: category });
     };
 
     return (
