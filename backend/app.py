@@ -30,7 +30,7 @@ class App:
         self.selectedParser = newParser
         answer = self.chat.switchParser(newParser)
         allMessages = self.chat.getHistory()
-        print('history: ' + '\n'.join(allMessages))
+        # print('history: ' + '\n'.join(allMessages))
         responses = newParser.message('\n'.join(allMessages))
         return {
             'responses': responses,
