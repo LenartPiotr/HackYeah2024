@@ -4,6 +4,7 @@ import { MessageType, SummaryType } from '../../types';
 import loadingGif from "../../assets/loading.gif";
 import { useMutation } from "react-query";
 import axios from "axios";
+import SpeechToText from "../SpeechToText/SpeechToText";
 
 const ChatBot = ({ addResponses }: ChatBotProps) => {
   const [message, setMessage] = useState<string>("");
@@ -75,7 +76,7 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
           <input name="message" ref={input} value={message} onChange={(e) => setMessage(e.target.value)} autoComplete="off"/>
           <button className="send" onClick={handleButton}>-&gt;</button>
         </div>
-        <button type="button" className="mic">X</button>
+        <SpeechToText setMessage={setMessage} />
       </div>
     </form>
   )
