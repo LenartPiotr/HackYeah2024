@@ -37,41 +37,96 @@
 //     },
 // };
 export const typeMap = {
-    name: {
+    first_name: {
         polish: 'Pierwsze imię',
         english: 'Name',
         ukrainian: "Ім'я"
     },
-    surname: {
+    last_name: {
         polish: 'Nazwisko',
         english: 'Surname',
         ukrainian: 'Прізвище'
     },
-    birthDate: {
+    birth_date: {
         polish: 'Data urodzenia',
         english: 'Date of birth',
         ukrainian: 'Дата народження'
     },
-    country: {
-        polish: 'Kraj',
-        english: 'Country',
-        ukrainian: 'Країна'
+    pesel: {
+        polish: 'PESEL',
+        english: 'PESEL',
+        ukrainian: 'PESEL'
     },
-    subjectOfTax: {
-        polish: 'Przedmiot opodatkowania',
-        english: 'Tax subject',
-        ukrainian: "Об'єкт оподаткування"
+    father_name: {
+        polish: 'Imię ojca',
+        english: 'Father name',
+        ukrainian: "Ім'я по батькові"
     },
-    typeOfCivilLawActivity: {
-        polish: 'Rodzaj czynności cywilnoprawnej',
-        english: 'Type of civil law activity',
-        ukrainian: 'Вид цивільно-правової діяльності'
+    mother_name: {
+        polish: 'Imię matki',
+        english: 'Mother name',
+        ukrainian: "Ім'я матері"
     },
-    typeOfCompany: {
-        polish: 'Typ spółki',
-        english: 'Type of company',
-        ukrainian: 'Тип компанії'
-    }
+    province: {
+        polish: 'Województwo',
+        english: 'Voivodeship',
+        ukrainian: "Воєводство"
+    },
+    district: {
+        polish: 'Powiat',
+        english: 'County',
+        ukrainian: "графство"
+    },
+    municipality: {
+        polish: 'Gmina',
+        english: 'Commune',
+        ukrainian: "Комуна"
+    },
+    street: {
+        polish: 'Ulica',
+        english: 'Street',
+        ukrainian: "вул"
+    },
+    house_number: {
+        polish: 'Numer domu',
+        english: 'House number',
+        ukrainian: "Номер будинку"
+    },
+    apartment_number: {
+        polish: 'Numer mieszkania',
+        english: 'Apartment number',
+        ukrainian: "Номер квартири"
+    },
+    city: {
+        polish: 'Miejscowość',
+        english: 'City',
+        ukrainian: "Місто"
+    },
+    postal_code: {
+        polish: 'Kod pocztowy',
+        english: 'Postal code',
+        ukrainian: "Поштовий індекс"
+    },
+    transaction_date: {
+        polish: 'Data dokonania czynności',
+        english: 'Date of the action',
+        ukrainian: "Дата проведення акції"
+    },
+    office_code: {
+        polish: 'Nazwa urzędu skarbowego',
+        english: 'Name of the tax office',
+        ukrainian: "Назва податкової служби"
+    },
+    final_value: {
+        polish: 'Wartość pieniężna',
+        english: 'Monetary value',
+        ukrainian: "Договір купівлі-продажу"
+    },
+    item_description: {
+        polish: 'Opis przedmiotu',
+        english: 'Item description',
+        ukrainian: "Грошова вартість"
+    },
 };
 
 // export const categoryMap = {
@@ -85,6 +140,11 @@ export const typeMap = {
 //     summary: 'Podsumowanie'
 // };
 export const categoryMap = {
+    A: {
+        polish: 'Okres, miejsce i cel składania deklaracji',
+        english: 'Period, place and purpose of submitting declarations',
+        ukrainian: 'Період, місце та мета подання декларації'
+    },
     B: {
         polish: 'B. Dane podatnika dokonującego zapłaty lub zwolnionego z podatku na podstawie art. 9 pkt 10 lit. B ustawy',
         english: 'B. Data of the taxpayer making payment or exempted from tax under Article 9(10)(B) of the Act',
