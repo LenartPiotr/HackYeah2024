@@ -39,7 +39,8 @@ class App:
     
     def edit(self, category, key, value):
         if self.selectedParser is not None:
-            self.selectedParser.update_value(category, key, value)
+            return self.selectedParser.update_value(category, key, value)
+        return []
     
     def xml(self):
         if self.selectedParser is not None:

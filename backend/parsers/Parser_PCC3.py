@@ -103,7 +103,10 @@ Nazwa urzędu skarbowego w mianowniku: x'''
         return differences
     
     def update_value(self, category, key, value):
-        self.fields[category][key] = value
+        if self.fields[category][key] != value:
+            self.fields[category][key] = value
+            return [{'type':key, 'category':category, 'value':value}]
+        return []
     
     def get_what_needed(self):
         needed = { 'A':[],'B':[],'D':[] }
@@ -203,18 +206,18 @@ Nazwa urzędu skarbowego w mianowniku: x'''
                 "parse": [self.parse_word, self.parse_no_bot_failure],
                 'validate': self.validate
             },
-            r"ulica zamieszkania: ([^\n]+)": {
+            r"ulica lub osiedle zamieszkania: ([^\n]+)": {
                 "field": "street",
                 'category': 'B',
                 "parse": [self.parse_word, self.parse_no_bot_failure],
                 'validate': self.validate
             },
-            r"osiedle zamieszkania: ([^\n]+)": {
-                "field": "neighborhood",
-                'category': 'B',
-                "parse": [self.parse_word, self.parse_no_bot_failure],
-                'validate': self.validate
-            },
+            # r"osiedle zamieszkania: ([^\n]+)": {
+            #     "field": "neighborhood",
+            #     'category': 'B',
+            #     "parse": [self.parse_word, self.parse_no_bot_failure],
+            #     'validate': self.validate
+            # },
             r"nr domu zamieszkania: ([^\n]+)": {
                 "field": "house_number",
                 'category': 'B',
@@ -257,6 +260,12 @@ Nazwa urzędu skarbowego w mianowniku: x'''
                 "parse": [self.parse_sentence, self.parse_no_bot_failure],
                 'validate': self.validate
             },
+            r"Nazwa urzędu skarbowego w mianowniku: ([^\n]+)": {
+                "field": "office_code",
+                'category': 'A',
+                "parse": [self.parse_sentence, self.parse_no_bot_failure],
+                'validate': self.validate
+            }
         }
 
         for pattern, entry in patterns.items():

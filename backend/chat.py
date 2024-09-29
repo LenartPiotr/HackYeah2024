@@ -23,7 +23,7 @@ class Chat:
     
     # Niech wygeneruje tekst nie rozpoznania parsera - parser: str
     def undefinedParser(self, parser):
-        return 'Basigna nie rozpoznaje: ' + parser
+        return f'Wybrano formularz {parser}, który nie jest obecnie zaimplementowany.'
     
     # Ustawiony nowy parser - newParser to obiekt
     def switchParser(self, newParser):

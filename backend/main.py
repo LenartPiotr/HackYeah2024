@@ -44,8 +44,5 @@ def get_xml():
     # return Response(content=xml_str, media_type="application/xml")
 
 @app.post('/edit')
-def edit(type):
-    return {
-        'responses': [],
-        'next_question': 'Podaj wartość dla edytowalnego pola'
-    }
+def edit(category, type, value):
+    return mainApp.edit(category, type, value)
