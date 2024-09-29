@@ -45,7 +45,7 @@ const Header = ({ settings, changeLanguage, setSummaryToggle }: HeaderProps) => 
                 <div className='heading-wrapper'>
                     <h2 className='heading-form'>PCC-3</h2>
                     <button className='summary-toggle' onClick={handleSummary}>
-                        Podsumowanie
+                        {messages['summary'][settings.language]}
                     </button>
                     <button className='menu-toggle' onClick={handleMenu}>
                         <GiHamburgerMenu />
@@ -106,6 +106,11 @@ const messages = {
         'polish': 'Wygeneruj plik XML',
         'english': 'Generate XML file',
         'ukrainian': 'Згенеруйте XML-файл'
+    },
+    "summary": {
+        "polish": "Podsumowanie",
+        "english": "Summary",
+        "ukrainian": "Підсумок",
     }
 };
 
