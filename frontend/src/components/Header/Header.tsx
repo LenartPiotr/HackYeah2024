@@ -43,7 +43,7 @@ const Header = ({ settings, changeLanguage, setSummaryToggle }: HeaderProps) => 
         <header className='header-main'>
             <div className='form-info'>
                 <div className='heading-wrapper'>
-                    <h2>PCC-3</h2>
+                    <h2 className='heading-form'>PCC-3</h2>
                     <button className='summary-toggle' onClick={handleSummary}>
                         Podsumowanie
                     </button>
@@ -51,7 +51,7 @@ const Header = ({ settings, changeLanguage, setSummaryToggle }: HeaderProps) => 
                         <GiHamburgerMenu />
                     </button>
                 </div>
-                <p>{messages['form-info-subtitle'][settings.language]}</p>
+                <p className='form-info-subtitle'>{messages['form-info-subtitle'][settings.language]}</p>
             </div>
             <div className='settings-panel' ref={settingsPanel}>
                 <div className='languages'>
