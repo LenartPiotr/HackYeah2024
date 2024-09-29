@@ -82,7 +82,9 @@ Data dokonania czynności: x
 Ostateczna wartość pieniężna: x
 Opis przedmiotu w formie bezosobowej: x
 Nazwa urzędu skarbowego w mianowniku: x'''
+        print('CHAT MESSAGE: ' + message)
         response = MSG(system_message, message)
+        print('CHAT RESPONSE: ' + response)
         before = deepcopy(self.fields)
         self.parse_message(response)
         return self.find_differences(before, self.fields)
