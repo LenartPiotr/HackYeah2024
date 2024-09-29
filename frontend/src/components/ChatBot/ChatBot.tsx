@@ -1,6 +1,6 @@
 import "./ChatBox.scss";
-import { useEffect, useRef, useState } from "react";
-import { MessageType, SummaryType } from '../../types';
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
+import { Settings, MessageType, SummaryType } from '../../types';
 import loadingGif from "../../assets/loading.gif";
 import { useMutation } from "react-query";
 import axios from "axios";
@@ -9,14 +9,11 @@ import SpeechToText from "../SpeechToText/SpeechToText";
 
 const formNames: string[] = ["PCC-2", "PCC-3", "PCC-3/A", "PCC-4", "PCC-4/A", "SD-2", "SD-3", "SD-3/A", "SD-Z2"];
 
-const ChatBot = ({ addResponses }: ChatBotProps) => {
+const ChatBot = ({ addResponses, chatData, setChatData, setFormName }: ChatBotProps) => {
   const [message, setMessage] = useState<string>("");
-  const [chatData, setChatData] = useState<MessageType[]>([{
-    text: "Witaj, opisz mi swoją sytuację, abym mógł ci pomóc"
-  }]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const messageBox = useRef<HTMLDivElement>(null);
-  const input = useRef<HTMLInputElement>(null);
+  const input = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     window.addEventListener('eFormName', handleFormEvent);
@@ -24,6 +21,7 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
 
   const handleFormEvent = (event: any) => {
     documentMutation.mutate({ response: event.detail.msg });
+    setFormName(event.detail.msg);
   }
 
   const postDocument = async (data: { response: string }) => {
@@ -54,7 +52,7 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
       setIsLoading(true);
     },
     onSuccess: (data) => {
-      setChatData(chatData => [...chatData, { text: parseMessage(data.next_question) }]);
+      setChatData((chatData: any) => [...chatData, { text: parseMessage(data.next_question) }]);
       addResponses(data.responses);
       setIsLoading(false);
     },
@@ -66,11 +64,11 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
 
   const mutation = useMutation(postMessage, {
     onMutate: () => {
-      setChatData(chatData => [...chatData, {text: message, fromUser: true}]);
+      setChatData((chatData: any) => [...chatData, {text: message, fromUser: true}]);
       setIsLoading(true);
     },
     onSuccess: (data) => {
-      setChatData(chatData => [...chatData, { text: parseMessage(data.next_question) }]);
+      setChatData((chatData: any) => [...chatData, { text: parseMessage(data.next_question) }]);
       addResponses(data.responses);
       setIsLoading(false);
     },
@@ -79,6 +77,16 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
       setIsLoading(false);
     },
   });
+  
+  const handleChange = (e?: any) => {
+    if(e) { setMessage(e.target.value); }
+    if(input.current) {
+      input.current.style.height = "inherit";
+      input.current.style.height = `${input.current.scrollHeight}px`;
+    }
+  }
+
+  useLayoutEffect(handleChange, []);
 
   useEffect(() => {
     if(messageBox.current) {
@@ -86,15 +94,14 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
     }
   }, [chatData])
 
+  useEffect(() => handleChange(), [message]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     if(!message) {
       return;
     }
-
     mutation.mutate({ response: message });
-    
     setMessage("");
   }
 
@@ -115,8 +122,8 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
       </div>
       <div className="input-row">
         <div className="input-wrapper">
-          <input name="message" ref={input} value={message} onChange={(e) => setMessage(e.target.value)} autoComplete="off"/>
-          <button className="send" onClick={handleButton}>
+          <textarea name="message" ref={input} value={message} onChange={handleChange} autoComplete="off"/>
+          <button type="submit" className="send" onClick={handleButton}>
             <IoSendSharp />
           </button>
         </div>
@@ -128,6 +135,10 @@ const ChatBot = ({ addResponses }: ChatBotProps) => {
 
 type ChatBotProps = {
   addResponses: (responseData: SummaryType[]) => void,
+  settings: Settings,
+  chatData: MessageType[],
+  setChatData: (val: any) => void,
+  setFormName: (val: string) => void
 };
 
 export default ChatBot;
