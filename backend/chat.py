@@ -38,7 +38,7 @@ class Chat:
     # Ustawiony nowy parser - newParser to obiekt
     def switchParser(self, newParser):
         fields = newParser.get_what_needed()
-        return self.ask_for_more_info(fields)
+        return self.ask_for_more_info(fields, 'Jakie informacje mam podać?')
     
     def inform_about_PCC(self, line):
         response = self.client.chat(model='llama3.2', messages=[
